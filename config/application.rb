@@ -4,7 +4,7 @@ require "rails"
 # Pick the frameworks you want:
 require "active_model/railtie"
 require "active_job/railtie"
-# require "active_record/railtie"
+require "active_record/railtie"
 require "action_controller/railtie"
 require "action_mailer/railtie"
 require "action_view/railtie"
@@ -32,9 +32,8 @@ module ApiConfsTech
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
-    config.gh_repo = '<repo-name>'
+    config.gh_repo = 'manumilou/confs.tech'
     config.gh_base = 'master'
-    config.gh_token = '<authorization-token>'
 
   end
 end
