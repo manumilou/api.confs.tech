@@ -5,7 +5,7 @@ class GithubWrapper
   def initialize(base = 'master')
     @repository = Rails.configuration.gh_repo
     @base = base
-    @client = Octokit::Client.new(:access_token => Rails.configuration.gh_token)
+    @client = Octokit::Client.new(:access_token => Rails.application.secrets.gh_token)
   end
 
   def create_pull_request(head, title)
