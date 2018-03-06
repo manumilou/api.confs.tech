@@ -1,7 +1,11 @@
 class GithubController < ApplicationController
+  before_action :assign_api_version
+
   rescue_from Octokit::UnprocessableEntity, Octokit::NotFound do |exception|
     render json: { status: exception.response_status, error: exception.message }
   end
+
+  LATEST_VERSION = '2018-03-05'
 
   def index
     gh_wrapper = GithubWrapper.new
@@ -34,6 +38,22 @@ class GithubController < ApplicationController
 
   private
 
+  def assign_api_version
+    byebug
+    requested_version = if request.headers['Api-Version']
+      request.headers['Api-Version']
+    else
+      LATEST_VERSION
+    end
+      
+    if @current_user.api_version.nil? || request.headers['Api-Version']
+      @current_user.api_version = requested_version
+      @current_user.save
+    end
+    # Validate version format. It must correspond to an existing version
+    # number defined in the master list. Then assign it to user
+  end
+  
   def commit_message
     "Add #{params[:name]} conference"
   end
