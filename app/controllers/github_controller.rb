@@ -1,4 +1,7 @@
 class GithubController < ApplicationController
+  rescue_from Octokit::UnprocessableEntity, Octokit::NotFound do |exception|
+    render json: { status: exception.response_status, error: exception.message }
+  end
 
   def index
     gh_wrapper = GithubWrapper.new
@@ -40,22 +43,9 @@ class GithubController < ApplicationController
     Digest::SHA2.hexdigest(string)[0..16]
   end
   
-  def mock_request_params
-    params = {
-      "domain": "ruby",
-      "year": 2018,
-      "name": "Ruby on Ice",
-      "url": "https://rubyonice.com/",
-      "startDate": "2018-01-26",
-      "endDate": "2018-01-28",
-      "city": "Tegernsee",
-      "country": "Germany",
-      "twitter": "@rubyoniceconf"
-    }
-  
-  end
-    
   def guess_json_filepath(year, domain)
+    return false if year.blank? || domain.blank?
+
     "conferences/#{year}/#{domain}.json"
   end
 
